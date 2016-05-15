@@ -1,0 +1,799 @@
+#-----------------------Skript de modération par Warmadon-----------------------#
+#-----------------------Commencé le: 19/04/16----------------------------------#
+#-----------------------Dernière version le: 11/05/2016----------------------------------#
+#Possibiliter de:
+#	Sanctionner un joueur via GUI ⓿ [FAIT]
+#	Banlist/Mutelist ⓿ [FAIT]
+#	Reset Banlist/Mutelist ⓿ [FAIT]
+#	Antispam ⓿ [FAIT] 
+#	Anti insulte ⓿ [FAIT]
+#	Clear/Mute chat ⓿ [FAIT]
+#	Unban/Unmute les joueurs ⓿ [FAIT]
+#	Ban/Tempban/Ban-ip/Mute les joueurs via GUI ⓿ [FAIT]
+#	Kick/Kickall les joueurs via GUI ⓿ [FAIT]
+#	Voir les Ban/Kick/Mute d'un joueur via GUI ⓿ [FAIT]
+#	Avertir les joueurs via GUI ⓿ [FAIT]
+#	Vérif un joueur via GUI ⓿ [FAIT]
+
+#-----------------------PERMISSIONS-----------------------#
+#	menu.mod < Permission pour ouvrir tout les GUI, de sanctionner les joueurs, voir les informations sur un joueur
+#	chat.control < Permission pour parler quand le chat est mute/spam si le slow est actif/clear/réglé le slow du chat/pouvoir parler en étant mute 
+#	mokox.reload < Permission pour reload le skript 
+#	look.list < Permission pour voir tout les list des sanctions (mutelist/banlist/baniplist)
+#	temp.use < Permission pour pouvoir ban/mute/unban/unmute
+#	looklist.reset < Permission pour reset les list de sanctions (mutelist/banlist/baniplist)
+#	kickall.use < Permission pour kickall
+#	kick.use < Permission pour kick/avertir
+#	banip.use < Permission pour unbanip/banip
+#	banhelp.use < Permission pour voir l'aide du skript
+#	mokox.* < Avoir la totalité des permissions
+
+#-----------------------COMMANDES-----------------------#
+#	/skmokox < Reload le skript
+#	/banlist < Voir la banlist
+#	/mutelist < Voir la mutelist
+#	/baniplist < Voir la baniplist
+#	/tempban < Ban un joueur
+#	/tmute < Mute un joueur
+#	/banip < Banip un joueur
+#	/unbanip < Unbanip un joueur
+#	/unban < Unban un joueur
+#	/unmute < Unmute un joueur
+#	/avert < Avertir un joueur
+#	/kick < Kick un joueur
+#	/kickall < Kick tout les joueurs 
+#	/rebanlist < Reset la banlist 
+#	/remutelist < Reset la mutelist 
+#	/rebaniplist < Reset la baniplist 
+#	/sancinfo < Voir les informations d'un joueur
+#	/sanction < Sanctionner un joueur
+#	/chat < Mute/Clear le chat
+#	/slow < Réglé l'antispam
+#	/banhelp < Aide sur le skript
+#	/banhelp.perm < Permission pour voir les permissions (OP)
+	
+#-----------------------OPTIONS-----------------------#
+options:
+	prefix: &8&l[&9&lModération&8&l]
+	prefix1: &f&l[&4&lWarmadon&f&l]
+	prefix2: &c&lErreur >>
+	prefix3: &e&l>> &6&lAntispam &e&l<<
+	prefix4: &3&l>> &2&lSlowChat &3&l<<
+	insultes: "pd" , "tg" , "fdp" , "ntm" , "connard" , "con" , "enculé" , "encule" , "batard" , "ta gueule" , "ferme ta gueule" , "nique ta race" , "ta mere la pute","ntm" or "nique ta mere"
+	monde: test #Mettre votre monde 
+#-----------------------EVENT-----------------------#
+
+on join:
+	if player is in "{@monde}":
+		if player has permission "menu.mod" or "mokox.*":
+			set slot 0 of the player to a clock named "&9&lModération"
+
+on click with clock:
+	if player is in "{@monde}":
+		if player has permission "menu.mod" or "mokox.*":
+			open chest with 3 rows named "&4&lMenu de Modération" to player
+			wait 1 tick
+			format slot 13 of player with skull of player named "&c&lKickAll" to close then run [make player execute command "/kickall Maintenance"]
+			format slot 2 of player with written book named "&c&lBanlist" to close then run [make player execute command "/banlist"]
+			format slot 11 of player with written book named "&c&lMutelist" to close then run [make player execute command "/mutelist"]
+			format slot 20 of player with written book named "&c&lBanlist" to close then run [make player execute command "/baniplist"]
+			format slot 8 of player with paper named "&c&lClear le chat" to close then run [make player execute command "/chat clear"]
+			format slot 17 of player with paper named "&c&lChat off" to close then run [make player execute command "/chat mute on"]
+			format slot 26 of player with paper named "&c&lChat on" to close then run [make player execute command "/chat mute off"]
+			format slot 0 of player with paper named "&c&lAntispam off" to close then run [make player execute command "/slow off"]
+			format slot 9 of player with paper named "&c&lAntispam 2sec" to close then run [make player execute command "/slow faible"]
+			format slot 18 of player with paper named "&c&lAntispam 5sec" to close then run [make player execute command "/slow fort"]
+			format slot 6 of player with book named "&c&lReset mutelist" to close then run [make player execute command "/remutelist"]
+			format slot 15 of player with book named "&c&lReset banlist" to close then run [make player execute command "/rebanlist"]
+			format slot 24 of player with book named "&c&lReset baniplist" to close then run [make player execute command "/rebaniplist"]
+			format slot 22 of player with red wool named "&c&lRetour" to close 
+			format slot 1 of player with white glass pane named "" to be unstealable 
+			format slot 3 of player with white glass pane named "" to be unstealable 
+			format slot 4 of player with white glass pane named "" to be unstealable
+			format slot 5 of player with white glass pane named "" to be unstealable
+			format slot 7 of player with white glass pane named "" to be unstealable
+			format slot 10 of player with white glass pane named "" to be unstealable
+			format slot 12 of player with white glass pane named "" to be unstealable 
+			format slot 14 of player with white glass pane named "" to be unstealable 
+			format slot 16 of player with white glass pane named "" to be unstealable
+			format slot 19 of player with white glass pane named "" to be unstealable
+			format slot 21 of player with white glass pane named "" to be unstealable 
+			format slot 23 of player with white glass pane named "" to be unstealable 
+			format slot 25 of player with white glass pane named "" to be unstealable		
+ 
+#-----------------------EVENT-DU-CHAT----------------------#
+
+on chat:
+	if message contains {@insultes}:
+		cancel event
+		send "{@prefix} &c&l Ce langage est interdit sur le serveur !" to player
+	if {mute.chat} is true:
+		if player doesn't have permission "chat.control" or "mokox.*":
+			cancel event
+			message "{@prefix4} &4&lLe chat est mute !" to player
+			stop
+	if player doesn't have permission "chat.control" or "mokox.*":
+		if {timerchat.delai} is false:
+			set {_diff} to difference between {chat.%player%} and now
+			if {_diff} is smaller than 2 seconds:
+				message "{@prefix3} &7&lPas de spam !"
+				cancel event
+				stop
+			set {chat.%player%} to now
+		if {timerchat.delai} is true:
+			set {_diff} to difference between {chat.%player%} and now
+			if {_diff} is smaller than 5 seconds:
+				message "{@prefix3} &7&lPas de spam !"
+				cancel event
+				stop
+	if player doesn't have permission "chat.control" or "mokox.*":
+		if {Mute::%player%} is true:
+			cancel event
+			message "{@prefix4} &7&lTu a été réduit au silence." to player
+			stop
+	else:
+		stop
+	
+#------------------------BANHELP-----------------------#
+
+command /banhelp [<text>]:
+	trigger:
+		if player has permission "banhelp.use" or "mokox.*":
+			if arg 1 is not set:
+				send ""
+				send ""
+				send ""
+				send ""
+				send ""
+				send ""
+				send "&8[&7------{@prefix}&7------&8]"
+				send "&a&l>> &7&lVoir les permissions : &c&l/banhelp perm &a&l<<"
+				send "&e&l>> &6&lSkript modération par &c&lSerkox_ &e&l<<"
+				send "&a&l>> &7&lVoir les commandes : &c&l/banhelp com1 &a&l<<"
+				send "&8[&7------{@prefix}&7------&8]"
+				send ""
+				send ""
+				send ""
+				stop
+			if arg 1 is "com1":
+				send "&7&lCommandes principale:"
+				send ""
+				send ""	
+				send ""
+				send ""
+				send "&8[&7------{@prefix}&7------&8]"
+				send "&7&l/sanction &f&l< &b&lSanctionner un joueur"
+				send "&7&l/skmokox &f&l< &b&lReload le skript"
+				send "&7&l/banhelp &f&l< &b&lAide sur le skript"
+				send "&7&l/sancinfo &f&l< &b&lVoir les informations d'un joueur"
+				send "&a&l>> &7&lVoir les commandes : &c&l/banhelp com2 &a&l<<"
+				send "&8[&7------{@prefix}&7------&8]"
+				send ""
+				send ""
+				send ""
+				stop
+			if arg 1 is "com2":
+				send "&8[&7------{@prefix}&7------&8]"
+				send "&7&l/kick &f&l< &b&lKick un joueur"
+				send "&7&l/banlist &f&l< &b&lVoir la banlist"
+				send "&7&l/mutelist &f&l< &b&lVoir la mutelist"
+				send "&7&l/baniplist &f&l< &b&lVoir la baniplist"
+				send "&7&l/tempban &f&l< &b&lBan un joueur"
+				send "&7&l/mute &f&l< &b&lMute un joueur"
+				send "&7&l/banip &f&l< &b&lBanip un joueur"
+				send "&7&l/unbanip &f&l< &b&lUnbanip un joueur"
+				send "&7&l/unban &f&l< &b&lUnban un joueur"
+				send "&7&l/unmute &f&l< &b&lUnmute un joueur"
+				send "&7&l/avert &f&l< &b&lAvertir un joueur"
+				send "&a&l>> &7&lVoir les commandes : &c&l/banhelp com3 &a&l<<"
+				send "&8[&7------{@prefix}&7------&8]"
+				stop
+			if arg 1 is "com3":
+				send "&8[&7------{@prefix}&7------&8]"
+				send "&7&l/slow &f&l< &b&lRéglé l'antispam"
+				send "&7&l/chat &f&l< &b&lMute/Clear le chat"
+				send "&7&l/rebaniplist &f&l< &b&lReset la baniplist"
+				send "&7&l/remutelist &f&l< &b&lReset la mutelist"
+				send "&7&l/rebanlist &f&l< &b&lReset la banlist"
+				send "&7&l/kickall &f&l< &b&lKick tout les joueurs"
+				send "&8[&7------{@prefix}&7------&8]"
+				stop
+			if player has permission "banhelp.perm" or "mokox.*":
+				if arg 1 is "perm":
+					send "&8[&7------{@prefix}&7------&8]"
+					send "&7&lmenu.mod &f&l< &b&lPermission pour ouvrir tout les GUI, de sanctionner les joueurs, voir les informations sur un joueur"
+					send "&7&lchat.control &f&l< &b&lPermission pour parler quand le chat est mute/pour spam si le slow est actif/clear/réglé le slow du chat/pouvoir parler en étant mute "
+					send "&7&llook.list &f&l< &b&lPermission pour voir tout les list des sanctions (mutelist/banlist/baniplist)"
+					send "&7&ltemp.use &f&l< &b&lPermission pour pouvoir ban/mute/unban/unmute"
+					send "&7&lmokox.reload &f&l< &b&lPermission pour reload le skript"
+					send "&7&llooklist.reset &f&l< &b&lPermission pour reset les list de sanctions (mutelist/banlist/baniplist)"
+					send "&7&lkickall.use &f&l< &b&lPermission pour kickall"
+					send "&7&lkick.use &f&l< &b&lPermission pour kick/avertir"
+					send "&7&lbanip.use &f&l< &b&lPermission pour unbanip/banip"
+					send "&7&lbanip.use &f&l< &b&lPermission pour pouvoir banip"
+					send "&7&lbanhelp.use &f&l< &b&lPermission pour voir l'aide du skript"
+					send "&7&lbanhelp.perm &f&l< &b&lPermission pour voir les permissions (OP)"
+					send "&7&lmokox.* &f&l< &b&lAvoir la totalité des permissions"
+					send "&8[&7------{@prefix}&7------&8]"
+					stop
+			else:
+				send "{@prefix} &c&lVous n'avez pas accès a cette commande."
+				
+				
+				
+
+		else:
+			send "{@prefix} &c&lVous n'avez pas accès a cette commande."
+						
+#-----------------------RELOAD LE SKRIPT-----------------------#
+
+command /skmokox:
+	trigger:
+		if player has permission "mokox.reload" or "mokox.*":
+			make player execute command "/sk reload Mokox"
+		else:
+			send "{@prefix1} &c&lVous n'avez pas accès a cette commande."
+			
+#-----------------------BANLIST-----------------------#
+
+command /banlist:
+		trigger:
+				if player has permission "look.list" or "mokox.*":
+						if {essentialsskript.banlist::*} is not set:
+								send "{@prefix} &7&lAucun joueur n'est banni."
+								stop
+						else:
+								send "{@prefix} &7&lJoueurs banni: &6%{essentialsskript.banlist::*}%"
+								stop
+				else:
+						send "{@prefix} &c&lVous n'avez pas accès a cette commande."
+						stop
+			
+#-----------------------BANIPLIST-----------------------#
+
+command /baniplist:
+		trigger:
+				if player has permission "look.list" or "mokox.*":
+						if {essentialsskript.baniplist::*} is not set:
+								send "{@prefix} &7&lAucun joueur n'est ban-ip."
+								stop
+						else:
+								send "{@prefix} &7&lJoueurs ban-ip: &6%{essentialsskript.baniplist::*}%"
+								stop
+				else:
+						send "{@prefix} &c&lVous n'avez pas accès a cette commande."
+						stop
+						
+#-----------------------MUTELIST-----------------------#
+
+command /mutelist:
+		trigger:
+				if player has permission "look.list" or "mokox.*":
+						if {essentialsskript.mutelist::*} is not set:
+								send "{@prefix} &7&lAucun joueur n'est mute."
+								stop
+						else:
+								send "{@prefix} &7&lJoueurs mute: &6%{essentialsskript.mutelist::*}%"
+								stop
+				else:
+						send "{@prefix} &c&lVous n'avez pas accès a cette commande."
+						stop
+#-----------------------SANCTION-----------------------#
+
+command /sanction [<offlineplayer>] [<text>]:
+	aliases: sanc, sc
+	usage: {@prefix} &7&l/sanction &c&l<Joueur> &c&l<Ban/Kick/Mute/Banip>
+	trigger:
+		if player has permission "menu.mod" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le nom du joueur a sanctionné !"
+				stop trigger
+			if arg 2 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le type de sanction (Ban/Kick/Mute/Banip) !"
+				stop trigger
+			if arg 2 is "ban":
+				open chest with 1 rows named "&1&lSanction pour Ban" to player
+				wait 1 tick
+				format slot 0 of player with gold sword named "&e&lCheat" with lore "&7&lLe joueur utilise un cheat!" to close then run [make player execute command "/tempban %arg 1% Cheat"] 
+				format slot 2 of player with name tag named "&c&lMenace hack/DDOS" with lore "&7&lLe joueur menace de ||&7&lhack/DDOS un joueur ou le serveur" to close then run [make player execute command "/tempban %arg 1% Menace"]
+				format slot 3 of player with paper named "&6&lInsulte Serveur" with lore "&7&lLe joueur insulte le serveur" to close then run [make player execute command "/tempban %arg 1% Insulte serveur"]
+				format slot 6 of player with map named "&b&lSpam Insulte" with lore "&7&lLe joueur spam des insultes" to close then run [make player execute command "/tempban %arg 1% Spam insulte"]
+				format slot 8 of player with enchanted book named "&6&lInsulte Staff" with lore "&7&lLe joueur insulte un membre du staff" to close then run [make player execute command "/tempban %arg 1% Insulte staff"]
+				format slot 5 of player with book named "&6&lPub" with lore "&7&lLe joueur fait de la pub" to close then run [make player execute command "/tempban %arg 1% pub"]
+				format slot 1 of player with white glass pane named "" to be unstealable 
+				format slot 4 of player with white glass pane named "" to be unstealable 
+				format slot 7 of player with white glass pane named "" to be unstealable
+			if arg 2 is "mute":
+				open chest with 1 rows named "&1&lSanction pour Mute" to player
+				wait 1 tick
+				format slot 0 of player with paper named "&6&lSpam/Maj/Flood" with lore "&7&lLe joueur spam dans le chat" to close then run [make player execute command "/tmute %arg 1% spam"]
+				format slot 2 of player with paper named "&6&lInsulte" with lore "&7&lLe joueur insulte" to close then run [make player execute command "/tmute %arg 1% insulte"]
+				format slot 6 of player with paper named "&6&lLangage" with lore "&7&lLe joueur a un langage déplacé" to close then run [make player execute command "/tmute %arg 1% langage"]
+				format slot 8 of player with paper named "&6&lProvocation" with lore "&7&lLe joueur provoque les autres joueurs" to close then run [make player execute command "/tmute %arg 1% provocation"]
+				format slot 1 of player with white glass pane named "" to be unstealable 
+				format slot 4 of player with white glass pane named "" to be unstealable 
+				format slot 3 of player with white glass pane named "" to be unstealable
+				format slot 5 of player with white glass pane named "" to be unstealable 
+				format slot 7 of player with white glass pane named "" to be unstealable
+			if arg 2 is "kick":
+				open chest with 1 rows named "&1&lSanction pour Kick" to player
+				wait 1 tick
+				format slot 4 of player with paper named "&6&lBug" with lore "&7&lLe joueur bug" to close then run [make player execute command "/kick %arg 1% bug"]
+				format slot 1 of player with white glass pane named "" to be unstealable 
+				format slot 2 of player with white glass pane named "" to be unstealable 
+				format slot 3 of player with white glass pane named "" to be unstealable
+				format slot 5 of player with white glass pane named "" to be unstealable 
+				format slot 6 of player with white glass pane named "" to be unstealable
+				format slot 7 of player with white glass pane named "" to be unstealable 
+				format slot 8 of player with white glass pane named "" to be unstealable 
+			if arg 2 is "banip":
+				if player has permission "banip.use" or "mokox.*":
+					open chest with 1 rows named "&1&lSanction pour Ban-ip" to player
+					wait 1 tick
+					format slot 3 of player with paper named "&6&lPub" with lore "&7&lLe joueur fait de la pub" to close then run [make player execute command "/banip %arg 1% pub"]
+					format slot 5 of player with gold sword named "&6&lMenace hack/DDOS" with lore "&7&lLe joueur menace de ||&7&lhack/DDOS un joueur ou le serveur" to close then run [make player execute command "/banip %arg 1% Menace"]
+					format slot 1 of player with white glass pane named "" to be unstealable 
+					format slot 2 of player with white glass pane named "" to be unstealable 
+					format slot 0 of player with white glass pane named "" to be unstealable
+					format slot 4 of player with white glass pane named "" to be unstealable 
+					format slot 6 of player with white glass pane named "" to be unstealable
+					format slot 7 of player with white glass pane named "" to be unstealable 
+					format slot 8 of player with white glass pane named "" to be unstealable 
+				else:
+					message "{@prefix} &c&lVous n'avez pas la permission !"
+		else:
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			
+#-----------------------BAN-----------------------#		
+		
+command /tempban [<offlineplayer>] [<text>]:
+	permission: temp.use , mokox.*
+	permission message: {@prefix} &c&lVous n'avez pas la permission !
+	usage: {@prefix} &7&l/tempban &c&l<Joueur> &c&l<Raison>
+	trigger:
+		if arg 1 is not set:
+			message "{@prefix} &7&lVeuillez indiquer le nom du joueur !"
+			stop trigger
+		if arg 2 is not set:
+			message "{@prefix} &7&lVeuillez indiquer la raison pour sanctionner le joueur !"
+			stop trigger
+		if arg 2 is "Cheat":
+			kick the argument 1 due to "&cVous avez était banni pendant 5 jours du serveur par &f%player%&c pour : &f%argument 2%"
+			ban argument 1
+			broadcast "{@prefix} &a%arg 1% &6à été bannis par &e%player% &6pour &4Cheat"
+			add "%arg-1's UUID%" to {essentialsskript.banlist::*}
+			set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+			add 1 to {info.%arg-1's UUID%.ban}
+			wait 604800 seconds 
+			unban argument 1
+			remove "%arg-1's UUID%" from {essentialsskript.banlist::*}
+		if arg 2 is "Spam insulte":
+			kick the argument 1 due to "&cVous avez était banni pendant 6 heures du serveur par &f%player%&c pour : &f%argument 2%"
+			ban argument 1
+			broadcast "{@prefix} &a%arg 1% &6à été bannis par &e%player% &6pour &4Spam Insulte"
+			add "%arg-1's UUID%" to {essentialsskript.banlist::*}
+			set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+			add 1 to {info.%arg-1's UUID%.ban}
+			wait 21600 seconds
+			unban argument 1
+			remove "%arg-1's UUID%" from {essentialsskript.banlist::*}
+		if arg 2 is "5 Avertissement":
+			kick the argument 1 due to "&cVous avez était bannis pendant 1 heure du serveur par &f%player%&c pour : &f%argument 2%"
+			ban argument 1
+			broadcast "{@prefix} &a%arg 1% &6à été bannis par &e%player% &6pour &4Avertissement répétitif "
+			add "%arg-1's UUID%" to {essentialsskript.banlist::*}
+			set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+			add 1 to {info.%arg-1's UUID%.ban}
+			wait 3600 seconds 
+			unban argument 1
+			remove "%arg-1's UUID%" from {essentialsskript.banlist::*}
+		if arg 2 is "Menace":
+			kick the argument 1 due to "&cVous avez était banni définitivement du serveur par &f%player%&c pour : &f%argument 2%"
+			ban argument 1
+			broadcast "{@prefix} &a%arg 1% &6à été bannis par &e%player% &6pour &4Menace Hack/DDOS"
+			add "%arg 1%" to {essentialsskript.banlist::*}
+			set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+			add 1 to {info.%arg-1's UUID%.ban}
+		if arg 2 is "Insulte Serveur" or "insulte staff":
+			kick the argument 1 due to "&cVous avez était banni définitivement du serveur par &f%player%&c pour : &f%argument 2%"
+			ban argument 1
+			broadcast "{@prefix} &a%arg 1% &6à été bannis par &e%player% &6pour &4Insulte Serveur/Staff"
+			add "%arg 1%" to {essentialsskript.banlist::*}
+			set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+			add 1 to {info.%arg-1's UUID%.ban}
+		if arg 2 is "pub":
+			kick the argument 1 due to "&cVous avez était banni définitivement du serveur par &f%player%&c pour : &f%argument 2%"
+			ban argument 1
+			broadcast "{@prefix} &a%arg 1% &6à été bannis par &e%player% &6pour &4Pub"
+			add "%arg 1%" to {essentialsskript.banlist::*}
+			set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+			add 1 to {info.%arg-1's UUID%.ban} 
+
+#-----------------------UNBAN-----------------------#
+
+command /unban [<offlineplayer>]:
+		trigger:
+				if player has permission "temp.use" or "mokox.*":
+						if {essentialsskript.%arg-1's UUID%.banlist::*} is true:
+								unban argument 1
+								remove "%arg-1's UUID%" from {essentialsskript.banlist::*}
+								set {essentialsskript.%arg-1's UUID%.banlist::*} to false
+								send "{@prefix} &7Le joueur &6%arg 1% &7a était de-banni !"
+								stop
+						else:
+								send "{@prefix} &cCe joueur n'est pas banni !"
+								stop
+				else:
+						message "{@prefix} &c&lVous n'avez pas la permission !"
+						stop
+						
+#-----------------------RESET BANLIST-----------------------#
+				
+command /rebanlist [<text>]:
+	aliases: rbl, resetbanlist
+	trigger:
+		if player has permission "looklist.reset" or "mokox.*":
+			if arg 1 is "all":
+				if {essentialsskript.banlist::*} is set:
+					delete {essentialsskript.banlist::*}
+					unban all players
+					send "{@prefix} &e&lLa &6&lbanlist &e&lviens d'ètre &c&lreset !" to player
+					stop
+			else:
+				send "{@prefix} &7&lMerci de mettre ""&6&lALL"" &7&ldans votre commande !" to player
+		else:
+			send "{@prefix} &c&lVous n'avez pas la permission !" to player
+			
+#-----------------------RESET MUTELIST-----------------------#	
+		
+command /remutelist [<text>]:
+	aliases: rml, resetmutelist
+	trigger:
+		if player has permission "looklist.reset" or "mokox.*":
+			if arg 1 is "all":
+				if {essentialsskript.mutelist::*} is set:
+					delete {essentialsskript.mutelist::*}
+					send "{@prefix} &e&lLa &6&lmutelist &e&lviens d'ètre &c&lreset !" to player
+					stop
+			else:
+				send "{@prefix} &7&lMerci de mettre ""&6&lALL"" &7&ldans votre commande !" to player
+		else:
+			send "{@prefix} &c&lVous n'avez pas la permission !" to player
+
+#-----------------------RESET BANIPLIST-----------------------#
+				
+command /rebaniplist [<text>]:
+	aliases: rbil, resetbaniplist
+	trigger:
+		if player has permission "looklist.reset" or "mokox.*":
+			if arg 1 is "all":
+				if {essentialsskript.baniplist::*} is set:
+					delete {essentialsskript.baniplist::*}
+					unban all players
+					send "{@prefix} &e&lLa &6&lbaniplist &e&lviens d'ètre &c&lreset !" to player
+					stop
+			else:
+				send "{@prefix} &7&lMerci de mettre ""&6&lALL"" &7&ldans votre commande !" to player
+		else:
+			send "{@prefix} &c&lVous n'avez pas la permission !" to player
+#-----------------------CLEAR/MUTE CHAT-----------------------#
+
+command /chat [<text>] [<text>]:
+	aliases: cc
+	trigger:
+		if player has permission "chat.control" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix4} &c&l/clear &8&l(mute/clear)" to player
+				stop trigger
+			if arg 1 is "clear":
+				loop 200 times:
+					broadcast ""
+				broadcast "{@prefix4} &2&lLe chat a été nettoyé par %player% !"
+				stop
+			if arg 2 is not set:
+				message "{@prefix4} &c&l/clear &8&l(on/off)" to player
+				stop trigger
+			if arg 1 is "mute":
+				if arg 2 is "on":
+					set {mute.chat} to true
+					broadcast "{@prefix4} &2&lLe chat à été mute par %player% !"
+				if arg 2 is "off":
+					set {mute.chat} to false
+					broadcast "{@prefix4} &2&lLe chat à été démute par %player% !"
+		else:
+			send "{@prefix4} &c&lVous n'avez pas la permission !" to player
+
+					
+#-----------------------ANTISPAM-----------------------#
+
+command /slow [<text>]:
+	trigger:
+		if player has permission "chat.control" or "mokox.*":
+			if arg 1 is not set:
+				message "/slow off/faible/fort"
+			if arg 1 is "off":
+				clear {timerchat.delai}
+				broadcast "{@prefix3} &6&lDélai désactivé !"
+			if arg 1 is "faible":
+				set {timerchat.delai} to false
+				broadcast "{@prefix3} &6&lDélai réglé à 2 secondes !"
+			if arg 1 is "fort":
+				set {timerchat.delai} to true
+				broadcast "{@prefix3} &6&lDélai réglé à 5 secondes !"
+		else:
+			send "{@prefix3} &c&lVous n'avez pas la permission !" to player
+ 
+#-----------------------MUTE-----------------------#
+
+command /tmute [<offlineplayer>] [<text>]:
+	usage: {@prefix} &7&l/tempmute &c&l<Joueur> &c&l<Raison>
+	trigger:
+		if player has permission "temp.use" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le nom du joueur !"
+			if arg 2 is not set:
+				message "{@prefix} &7&lVeuillez indiquer la raison pour sanctionner le joueur !"
+			if arg 2 is "spam" or "flood" or "maj":
+				if {Mute::%arg-1's UUID%} is false:
+					broadcast "{@prefix} &a%arg 1% &6à été mute par &e%player% &6pour &4Spam/Maj/Flood"
+					add "%arg 1%" to {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to true
+					add 1 to {info.%arg-1's UUID%.mute}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 1 heure par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7a été réduit au silence par %player%."  
+					wait 3600 seconds
+					remove "%arg-1's UUID%" from {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to false
+					stop
+				If {Mute::%arg-1's UUID%} is true:
+					delete {Mute::%arg-1's UUID%}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 1 heure par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7n'est plus réduit au silence."
+			if arg 2 is "langage":
+				if {Mute::%arg-1's UUID%} is false:
+					broadcast "{@prefix} &a%arg 1% &6à été mute par &e%player% &6pour &4Langage"
+					add "%arg-1's UUID%" to {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to true
+					add 1 to {info.%arg-1's UUID%.mute}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 2 heures par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7a été réduit au silence par %player%."  
+					wait 7200 seconds
+					remove "%arg-1's UUID%" from {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to false
+					stop
+				If {Mute::%arg-1's UUID%} is true:
+					delete {Mute::%arg-1's UUID%}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 2 heures par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7n'est plus réduit au silence."
+			if arg 2 is "insulte":
+				if {Mute::%arg-1's UUID%} is false:
+					broadcast "{@prefix} &a%arg 1% &6à été mute par &e%player% &6pour &4Insulte"
+					add "%arg-1's UUID%" to {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to true
+					add 1 to {info.%arg-1's UUID%.mute}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 4 heures par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7a été réduit au silence par %player%."  
+					wait 14400 seconds
+					remove "%arg-1's UUID%" from {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to false
+					stop
+				If {Mute::%arg-1's UUID%} is true:
+					delete {Mute::%arg-1's UUID%}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 4 heures par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7n'est plus réduit au silence."
+			if arg 2 is "provocation":
+				if {Mute::%arg-1's UUID%} is false:
+					broadcast "{@prefix} &a%arg 1% &6à été mute par &e%player% &6pour &4Provocation"
+					add "%arg-1's UUID%" to {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to true
+					add 1 to {info.%arg-1's UUID%.mute}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 1 heure par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7a été réduit au silence par %player%."  
+					wait 3600 seconds
+					remove "%arg-1's UUID%" from {essentialsskript.mutelist::*}
+					set {Mute::%arg-1's UUID%} to false
+					stop
+				If {Mute::%arg-1's UUID%} is true:
+					delete {Mute::%arg-1's UUID%}
+					send "{@prefix} &7&lTu a été réduit au silence pendant 1 heure par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7n'est plus réduit au silence."
+			
+		else:	
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			stop
+		
+#-----------------------UNMUTE-----------------------#
+
+command /unmute [<offlineplayer>]:
+	usage: {@prefix} &7&l/unmute &c&l<Joueur> 
+	trigger:
+		if player has permission "temp.use" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le nom du joueur !"
+			if arg 1 is set:
+				if {mute::%arg-1's UUID%} is true:
+					set {mute::%arg-1's UUID%} to false
+					remove "%arg-1's UUID%" from {essentialsskript.mutelist::*}
+					send "{@prefix} &7&lTu a été démute par &6%player%&7." to arg 1
+					message "{@prefix} &6%player% &7a été démute par %player%."
+		else:	
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			stop
+			
+#-----------------------KICKALL-----------------------#
+
+command /kickall [<text>]:
+	trigger:
+		if player has permission "kickall.use" or "mokox.*":
+			if arg 1 is set:
+				broadcast "{@prefix} &7&lTout les joueurs vont être kick par &e%player% &6&lpour &4%arg 1% !"
+				wait 10 seconds 
+				kick all players due to "&6Tout les joueurs ont été kick par &e%player% &6&lpour &4%arg 1% !"
+				stop
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer une raison !" to player
+				stop
+		else:
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			stop
+			
+#-----------------------KICK-----------------------#
+
+command /kick [<player>] [<text>]:
+	trigger:
+		if player has permission "kick.use" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le nom du joueur !"
+				stop
+			if arg 2 is not set:
+				message "{@prefix} &7&lVeuillez indiquer la raison pour sanctionner le joueur !"
+				stop
+			if arg 1 is set:
+				if arg 1 is online:
+					if arg 2 is set:
+						kick arg 1 due to "&6Vous avez été kick par &e%player% &6pour &4%arg 2%" 
+						broadcast "&a%arg 1% &6à été kick par &e%player% &6pour &4%arg 2% !"
+						add 1 to {info.%arg-1's UUID%kick}
+					else:
+						message "{@prefix} &7&lVeuilez indiquer la raison pour sanctionner le joueur"
+						stop
+				else:
+					message "{@prefix} &7&lLe joueur est hors-ligne !"
+					stop
+		else:
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			stop
+			
+#-----------------------BANIP-----------------------#
+
+command /banip [<offline player>] [<text>]:
+	usage: {@prefix} &7&l/banip &c&l<Joueur> <Raison>
+	trigger:
+		if player has permission "banip.use" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le nom du joueur !"
+				stop
+			if arg 2 is not set:
+				message "{@prefix} &7&lVeuillez indiquer la raison pour sanctionner le joueur !"
+				stop
+			else:
+				if {banned.ip.%arg-1's UUID%} is true:
+					message "{@prefix} &cTu ne peux pas ban 2 fois le même joueur !"
+				else:
+					if arg 2 is "pub":
+						set {banned.ip.%arg-1's UUID%} to true
+						broadcast "{@prefix} &a%arg 1% &6à été ban-ip par &e%player% &6pour &4Pub"
+						IP-ban the arg 1 because "Pub"
+						kick arg 1 due to "&cVous avez était ban-ip du serveur par &f%player%&c pour : &f%argument 2%"
+						add "%arg-1's UUID%" to {essentialsskript.banlist::*}
+						set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+						add "%arg-1's UUID%" to {essentialsskript.baniplist::*}
+						add 1 to {info.%arg-1's UUID%.ban} 
+						stop
+					if arg 2 is "menace":
+						set {banned.ip.%arg-1's UUID%} to true
+						broadcast "{@prefix} &a%arg 1% &6à été ban-ip par &e%player% &6pour &4Menace Hack/DDOS"
+						IP-ban the arg 1 because "Menace Hack/DDOS"
+						kick arg 1 due to "&cVous avez était ban-ip du serveur par &f%player%&c pour : &f%argument 2%"
+						add "%arg-1's UUID%" to {essentialsskript.banlist::*}
+						set {essentialsskript.%arg-1's UUID%.banlist::*} to true
+						add "%arg-1's UUID%" to {essentialsskript.baniplist::*}
+						add 1 to {info.%arg-1's UUID%.ban} 
+						stop
+						
+
+
+#-----------------------UNBANIP-----------------------#
+
+command /unbanip [<offline player>]:
+	usage: {@prefix} &7&l/unbanip &c&l<Joueur> 
+	trigger:
+		if player has permission "banip.use" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le nom du joueur !"
+				stop
+			else:
+				if {banned.ip.%arg-1's UUID%} is true:
+					set {banned.ip.%arg-1's UUID%} to false
+					IP unban arg 1
+					remove "%arg-1's UUID%" from {essentialsskript.banlist::*}
+					remove "%arg-1's UUID%" from {essentialsskript.baniplist::*}
+					set {essentialsskript.%arg-1's UUID%.banlist::*} to false
+					send "{@prefix} &7&lLe joueur &6%arg 1% &7a était de-banni !"
+					stop
+				else:
+					send "{@prefix} &c&lCe joueur n'est pas banni !"
+					stop
+		else:
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			stop
+			
+#-----------------------INFO-----------------------#
+
+command /sancinfo [<offlineplayer>]:
+	trigger:
+		if player has permission "menu.mod" or "mokox.*":
+			open chest with 3 rows named "&e&lInformation sur &l%arg 1%" to player
+			wait 1 tick
+			format slot 1 of player with enchanted book named "&4&lNombre de ban" with lore "&7&lCe joueur à eu &6&l%{info.%arg-1's UUID%.ban}% &7&lban !" to close
+			format slot 19 of player with enchanted book named "&4&lNombre de mute" with lore "&7&lCe joueur à eu &6&l%{info.%arg-1's UUID%.mute}% &7&lmute !" to close
+			format slot 25 of player with book named "&4&lNombre de kick" with lore "&7&lCe joueur à eu &6&l%{info.%arg-1's UUID%.kick}% &7&lkick !" to close
+			format slot 7 of player with book named "&4&lNombre d'avertissement" with lore "&7&lCe joueur à eu &6&l%{info.%arg-1's UUID%.avert}% &7&lavertissement !" to close
+			format slot 13 of player with nether star named "&4&lPing :" with lore "&7&l%player's ping% ms" to close
+			format slot 22 of player with skull of arg 1 named "&c&l%arg 1%" to close 
+			format slot 3 of player with white glass pane named "" to be unstealable 
+			format slot 5 of player with white glass pane named "" to be unstealable 
+			format slot 0 of player with white glass pane named "" to be unstealable
+			format slot 6 of player with white glass pane named "" to be unstealable 
+			format slot 2 of player with white glass pane named "" to be unstealable
+			format slot 9 of player with white glass pane named "" to be unstealable 
+			format slot 8 of player with white glass pane named "" to be unstealable
+			format slot 10 of player with white glass pane named "" to be unstealable 
+			format slot 11 of player with white glass pane named "" to be unstealable 
+			format slot 12 of player with white glass pane named "" to be unstealable
+			format slot 13 of player with white glass pane named "" to be unstealable 
+			format slot 14 of player with white glass pane named "" to be unstealable
+			format slot 15 of player with white glass pane named "" to be unstealable 
+			format slot 16 of player with white glass pane named "" to be unstealable
+			format slot 4 of player with white glass pane named "" to be unstealable 
+			format slot 17 of player with white glass pane named "" to be unstealable 
+			format slot 18 of player with white glass pane named "" to be unstealable 
+			format slot 20 of player with white glass pane named "" to be unstealable
+			format slot 21 of player with white glass pane named "" to be unstealable 
+			format slot 23 of player with white glass pane named "" to be unstealable
+			format slot 24 of player with white glass pane named "" to be unstealable 
+			format slot 26 of player with white glass pane named "" to be unstealable
+		else:
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			stop
+			
+#-----------------------AVERTISSEMENT-----------------------#
+
+command /avert [<player>] [<text>]:
+	usage: {@prefix} &7&l/avert &c&l<Joueur> <Raison>
+	trigger:
+		if player has permission "kick.use" or "mokox.*":
+			if arg 1 is not set:
+				message "{@prefix} &7&lVeuillez indiquer le nom du joueur !"
+				stop
+			if arg 2 is not set:
+				message "{@prefix} &7&lVeuillez indiquer la raison pour sanctionner le joueur !"
+				stop
+			if arg 2 is set:
+				broadcast "{@prefix} &a%arg 1% &6à été avertis par &e%player% &6pour &4%arg 2%"
+				send "{@prefix} &6&lVous avez été avertis pour %arg 2%" to arg 1
+				add 1 to {info.%arg-1's UUID%.avert}	
+				if {info.%arg-1's UUID%.avert} is 5:
+					remove 5 from {info.%arg-1's UUID%.avert}
+					make player execute command "/tempban %arg 1% 5 avertissement"
+				else:
+					stop 
+		else:
+			message "{@prefix} &c&lVous n'avez pas la permission !"
+			stop
+			
+
+
+			
+			
+			
